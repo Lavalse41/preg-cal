@@ -1,0 +1,171 @@
+<!-- 
+1) นับแบบปกติ คือ นับจากวันที่มีประจำเดือนครั้งล่าสุด (ใส่ค่า) มาถึงปัจจุบัน (ไม่ได้ผู้ใช้ใส่ค่า) 
+2) นับอายุครรภ์แบบ จาก (วันที่ใส่ค่า) ถึง ( วันที่ใส่ค่า)  
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Preg Week Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap" rel="stylesheet">
+</head>
+<style>
+    body {
+        font-family: 'Anuphan', sans-serif;
+        font-weight: 500;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap:60px;
+        background-color: #e1e1e1;
+    }
+
+    input {
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        padding: 5px;
+        width: 100%;
+        height: 30px; 
+        font-size: 20px;
+    }
+
+    .result {
+        position: relative;
+        font-size: 20px;
+        font-weight: bold;
+        /* background-color: rgb(213, 230, 109); */
+        background-color: #CDFF8E;;
+        width: 100%;
+        border-radius: 5px;
+        text-align: center;
+        height: 40px;
+        width: 200px;
+        color:black;
+    }
+
+    #preg-res{
+        position: absolute;
+        width: 100%;
+        bottom: -12px;
+        text-align: center;
+    }
+
+    .outer-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 400px; 
+        padding-top: 15px;
+        padding-bottom: 30px;
+        border-radius: 8px;  
+        border: 2px solid #ccc;
+        margin-top: 50px;
+        background-color:  white;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 200px;
+    }
+
+    .reset-btn {
+        background-color: #078035; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+        width: 100%;
+    }
+</style>
+<body>
+
+<div class="outer-container">
+    <h1>คำนวณอายุครรภ์</h1>
+    <div class="container">
+        <p>วันที่ประจำเดือนมา</p>
+            <input type="date" id="start" name="start" value="" min="" max="">
+            <p>วันสุดท้าย</p>
+            <input type="date" id="end" name="end" value="" min="" max="">
+            <p>อายุครรภ์</p>
+            <div class="result">
+            <p id="preg-res"></p>
+        </div>
+        <button class="reset-btn" onclick="resetDate()">Reset</button>
+    </div>
+</div>
+
+<script>
+//set default date 
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+    dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+    mm = '0' + mm;
+    } 
+        
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("start").setAttribute("max", today);
+    document.getElementById("end").setAttribute("value", today);
+
+//error handling start date must be less than end date
+    document.getElementById("start").addEventListener("change", function() {
+        var start = new Date(this.value);
+        var end = new Date(document.getElementById("end").value);
+        document.getElementById("end").setAttribute("min", start.toISOString().split("T")[0]);
+    });
+
+    document.getElementById("end").addEventListener("change", function() {
+        var end = new Date(this.value);
+        var start = new Date(document.getElementById("start").value);
+        document.getElementById("start").setAttribute("max", end.toISOString().split("T")[0]);
+    });
+
+// cal from start date to end date
+    document.getElementById("start").addEventListener("change", function() {
+        var start = new Date(this.value);
+        var end = new Date(document.getElementById("end").value);
+        var diffTime = Math.abs(end - start);
+        var diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+        var weeks = Math.floor(diffDays / 7);
+        var days = diffDays % 7;
+        document.getElementById("preg-res").innerHTML = weeks + " สัปดาห์ " + days + " วัน";
+    });
+
+    document.getElementById("end").addEventListener("change", function() {
+        var end = new Date(this.value);
+        var start = new Date(document.getElementById("start").value);
+        var diffTime = Math.abs(end - start);
+        var diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+        var weeks = Math.floor(diffDays / 7);
+        var days = diffDays % 7;
+        document.getElementById("preg-res").innerHTML = weeks + " สัปดาห์ " + days + " วัน";
+    });
+
+//reset date
+    function resetDate() {
+        document.getElementById("start").value = "";
+        document.getElementById("end").value = today;
+        document.getElementById("preg-res").innerHTML = "";
+    }
+</script>
+
+
+</body>
+</html>
